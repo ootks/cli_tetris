@@ -18,14 +18,22 @@ int main()
     int row, col;
     getmaxyx(stdscr, row, col);
 
+    time_t start_time = time(0);
+
+    curses_display(board, row, col);
+    bool display = false;
+
     while(continuing){
-        clear();
-        
-        curses_display(board, row, col);
-        continuing = board.next_frame();
-        
-        timeout(1000);
-        getch();
+        display = false;
+        if(time(NULL) - start_time > 1){
+            continuing = board.next_frame();
+            display = true;
+            start_time = time(0);
+        }
+        if(display){
+            clear();
+            curses_display(board, row, col);
+        }
         refresh();
     }
 
