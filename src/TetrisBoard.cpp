@@ -24,20 +24,26 @@ TetrisBoard::TetrisBoard(){
 }
 
 bool TetrisBoard::next_frame(){
-    Tetromino tet = curr.descend();
-    if(check(tet)){
-      curr = tet;
-    }
-    else{
+    if(!move(Descend)){
         for(int i = 0; i < 4; i++){
             set_occupied(true, curr.squares[i]);
         }
+        clear_lines();
         curr = Tetromino();
         if(!check(curr)){
             return false;
         }	
     }
     return true;
+}
+
+void clear_lines(){
+//    bool clear_this_line = false;;
+//    for(int i = 0; i < HEIGHT; i++){
+//        for(int j = 0; j < WIDTH; j++)
+//            clear_this_line = false;
+//        }
+//    }
 }
 
 bool TetrisBoard::check(Tetromino tet){
@@ -55,6 +61,7 @@ bool TetrisBoard::check(Tetromino tet){
 void TetrisBoard::set_occupied(bool on, Position pos){
     is_occupied[(pos.x)][(pos.y)] = true;
 }
+
 bool TetrisBoard::occupied(int x, int y){
     return is_occupied[x][y];
 }
@@ -62,25 +69,24 @@ bool TetrisBoard::occupied(int x, int y){
 Position TetrisBoard::get_curr(int i){
     return curr.squares[i];
 }
-//void TetrisBoard::move(int dir){
-//    Tetromino tet;
-//    if(dir == T_LEFT){
-//       tet = curr.move(-1);
-//    }
-//    if(dir == T_RIGHT){
-//       tet = curr.move(1);
-//    }
-//    if(dir == DESCEND){
-//       tet = curr.descend();
-//    }
-//    if(dir == ROTATE_CC){
-//        tet = curr.rotate(-1);
-//    }
-//    if(dir == ROTATE_CW){
-//        tet = curr.rotate(1);
-//    }
-//    if(check(tet)){
-//        curr = tet;
-//    }
-//
-//}
+
+bool TetrisBoard::move(Direction dir){
+    Tetromino tet;
+    if(dir == Left){
+       tet = curr.move(-1);
+    }
+    if(dir == Right){
+       tet = curr.move(1);
+    }
+    if(dir == Descend){
+       tet = curr.descend();
+    }
+    if(dir == Rotate_CC){
+        tet = curr.rotate(-1);
+    }
+    if(check(tet)){
+        curr = tet;
+        return true;
+    }
+    return false;
+}

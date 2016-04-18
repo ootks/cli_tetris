@@ -53,9 +53,9 @@ void Tetromino::init(int type){
 	}
 	if(type == JTILE){
 		temp = {Position(WIDTH/2 + 1, 1),
-				   Position(WIDTH/2 + 0, 1),
+				   Position(WIDTH/2 + 1, 0),
 				   Position(WIDTH/2, 0),
-				   Position(WIDTH/2 - 1, 1)};
+				   Position(WIDTH/2 - 1, 0)};
 		color = Color(TEAL);
 	}
 	for(int i = 0; i < 4; i++){
@@ -73,7 +73,7 @@ Tetromino Tetromino::move(int dir){
 	Tetromino tet;
 	for(int i = 0; i < 4; i++){
 		tet.squares[i].x = squares[i].x + dir;
-		tet.squares[i].x = squares[i].y;
+		tet.squares[i].y = squares[i].y;
 	}
 	return tet;
 }

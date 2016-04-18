@@ -14,6 +14,9 @@ int main()
     bool continuing = true;
 
     initscr();
+    noecho();
+    cbreak();
+    keypad(stdscr, true);
 
     int row, col;
     getmaxyx(stdscr, row, col);
@@ -25,6 +28,30 @@ int main()
 
     while(continuing){
         display = false;
+
+        timeout(0);
+        int c = getch();
+
+        if(c == KEY_LEFT){
+            board.move(Left);
+            display = true;
+        }
+        if(c == KEY_RIGHT){
+            board.move(Right);
+            display = true;
+        }
+        if(c == KEY_DOWN){
+            board.move(Descend);
+            display = true;
+        }
+        if(c == KEY_UP){
+            board.move(Rotate_CC);
+            display = true;
+        }
+        if(c == KEY_DOWN){
+            board.move(Rotate_CW);
+            display = true;
+        }
         if(time(NULL) - start_time > 1){
             continuing = board.next_frame();
             display = true;
