@@ -6,7 +6,6 @@
 Tetromino::Tetromino(){
     srand(time(NULL));
     init(rand()%7);
-    init(ITILE);
 }
 void Tetromino::init(int type){
 	std::array<Position, 4> temp;
@@ -15,6 +14,7 @@ void Tetromino::init(int type){
 				   Position(WIDTH/2, 0),
 				   Position(WIDTH/2, 1),
 				   Position(WIDTH/2 - 1, 1)};
+        barycenter = Position(WIDTH+1, 1);
 		color = Color(RED);
 	}
 	if(type == ZTILE){
@@ -22,6 +22,7 @@ void Tetromino::init(int type){
 				   Position(WIDTH/2, 0),
 				   Position(WIDTH/2, 1),
 				   Position(WIDTH/2 + 1, 1)};
+        barycenter = Position(WIDTH+1, 1);
 		color = Color(BLUE);
 	}
 	if(type == LTILE){
@@ -29,6 +30,7 @@ void Tetromino::init(int type){
 				   Position(WIDTH/2 + 1, 1),
 				   Position(WIDTH/2, 1),
 				   Position(WIDTH/2 - 1, 1)};
+        barycenter = Position(WIDTH, 2);
 		color = Color(GREEN);
 	}
 	if(type == ITILE){
@@ -36,6 +38,7 @@ void Tetromino::init(int type){
 				   Position(WIDTH/2 + 1, 0),
 				   Position(WIDTH/2, 0),
 				   Position(WIDTH/2 - 1, 0)};
+        barycenter = Position(WIDTH + 2, 0);
 		color = Color(GREEN);
 	}
 	if(type == OTILE){
@@ -43,6 +46,7 @@ void Tetromino::init(int type){
 				   Position(WIDTH/2 + 1, 1),
 				   Position(WIDTH/2, 0),
 				   Position(WIDTH/2 + 1, 0)};
+        barycenter = Position(WIDTH + 1, 1);
 		color = Color(PURPLE);
 	}
 	if(type == TTILE){
@@ -50,6 +54,7 @@ void Tetromino::init(int type){
 				   Position(WIDTH/2, 0),
 				   Position(WIDTH/2 - 1,0),
 				   Position(WIDTH/2, 1)};
+        barycenter = Position(WIDTH, 0);
 		color = Color(ORANGE);
 	}
 	if(type == JTILE){
@@ -57,6 +62,7 @@ void Tetromino::init(int type){
 				   Position(WIDTH/2 + 1, 0),
 				   Position(WIDTH/2, 0),
 				   Position(WIDTH/2 - 1, 0)};
+        barycenter = Position(WIDTH, 0);
 		color = Color(TEAL);
 	}
 	for(int i = 0; i < 4; i++){
@@ -75,21 +81,19 @@ Tetromino Tetromino::move(int dir){
 	for(int i = 0; i < 4; i++){
 		tet.squares[i].x = squares[i].x + dir;
 		tet.squares[i].y = squares[i].y;
+        tet.barycenter.x = barycenter.x + 2*dir;
+        tet.barycenter.y = barycenter.y;
 	}
 	return tet;
 }
 
 Tetromino Tetromino::rotate(int dir){
 	Tetromino tet;
-	Position bottomMost = squares[0];
-	for(int i = 1; i < 4; i++){
-		if(bottomMost.y > squares[i].y){
-			bottomMost = squares[i];
-		}
-	}
 	for(int i = 0; i < 4; i++){
-		tet.squares[i].x = dir*(squares[i].y - bottomMost.y) + bottomMost.y;
-		tet.squares[i].y = dir*(bottomMost.x - squares[i].x) + bottomMost.y;
+		tet.squares[i].x = (int)(dir*(squares[i].y - barycenter.y/2.0) + barycenter.x/2.0);
+		tet.squares[i].y = (int)(dir*(barycenter.x/2.0 - squares[i].x) + barycenter.y/2.0);
+        tet.barycenter.x = barycenter.x;
+        tet.barycenter.y = barycenter.y;
 	}
 	return tet;
 }
@@ -99,6 +103,8 @@ Tetromino Tetromino::descend(){
 	for(int i = 0; i < 4; i++){
 		tet.squares[i].x = squares[i].x;
 		tet.squares[i].y = squares[i].y+1;
+        tet.barycenter.x = barycenter.x;
+		tet.barycenter.y = barycenter.y+2;
 	}
     return tet;
 }
