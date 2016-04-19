@@ -17,13 +17,14 @@ public:
 	bool move(Direction dir); bool check(Tetromino tet);
     bool occupied(int x, int y);
     Position get_curr(int i);
+    Position get_next(int i);
     void clear_lines();
 //    friend void curses_display(TetrisBoard board, int max_row, int max_col);
 private:
     void init(int type);
 	bool is_occupied[WIDTH][HEIGHT];
 	Color colors[WIDTH][HEIGHT];
-	Tetromino curr;
+	Tetromino curr, next;
 	int frame_time;
 
     void set_occupied(bool on, Position pos);

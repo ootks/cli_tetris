@@ -21,6 +21,7 @@ TetrisBoard::TetrisBoard(){
 		}
 	}
     curr = Tetromino();
+    next = Tetromino();
 }
 
 bool TetrisBoard::next_frame(){
@@ -29,7 +30,8 @@ bool TetrisBoard::next_frame(){
             set_occupied(true, curr.squares[i]);
         }
         clear_lines();
-        curr = Tetromino();
+        curr = next;
+        next = Tetromino();
         if(!check(curr)){
             return false;
         }	
@@ -99,6 +101,10 @@ bool TetrisBoard::occupied(int x, int y){
     return is_occupied[x][y];
 }
 
+Position TetrisBoard::get_next(int i){
+    return next.squares[i];
+}
+
 Position TetrisBoard::get_curr(int i){
     return curr.squares[i];
 }
@@ -116,6 +122,14 @@ bool TetrisBoard::move(Direction dir){
     }
     if(dir == Rotate_CC){
         tet = curr.rotate(-1);
+    }
+    if(dir == Drop){
+        tet = curr.descend();
+        while(check(tet)){
+            curr = tet;
+            tet = curr.descend();
+        }
+        next_frame();
     }
     if(check(tet)){
         curr = tet;

@@ -48,6 +48,10 @@ int main()
             board.move(Rotate_CC);
             display = true;
         }
+        if(c == ' '){
+            board.move(Drop);
+            display = true;
+        }
         if(time(NULL) - start_time > 1){
             continuing = board.next_frame();
             display = true;
@@ -72,13 +76,21 @@ void curses_display(TetrisBoard board, int max_row, int max_col){
 
     for(int i = 0; i < HEIGHT; i++){
         for(int j = 0; j < WIDTH; j++){
-            row_msg[j] = (board.occupied(j, i) ? '*' : '_');
+            row_msg[j] = (board.occupied(j, i) ? '*' : ' ');
         }
 
-        mvprintw((max_row-HEIGHT)/2 + i, (max_col-WIDTH)/2, "%s", row_msg);
+        mvprintw((max_row-HEIGHT)/2 + i, (max_col-WIDTH)/2-1, "|%s|", row_msg);
     }
+
+    for(int j = 0; j < WIDTH; j++){
+        row_msg[j] = '-';
+    }
+    mvprintw((max_row+HEIGHT)/2, (max_col-WIDTH)/2, "%s", row_msg);
 
     for(int j = 0; j < 4; j++){
         mvprintw((max_row-HEIGHT)/2 + board.get_curr(j).y, (max_col-WIDTH)/2 + board.get_curr(j).x, "%s", "x");
+    }
+    for(int j = 0; j < 4; j++){
+        mvprintw((max_row-HEIGHT)/2 + board.get_next(j).y, (max_col-WIDTH)/2 - 10 + board.get_next(j).x, "%s", "x");
     }
 }
