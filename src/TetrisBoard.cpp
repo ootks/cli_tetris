@@ -43,7 +43,7 @@ void TetrisBoard::clear_lines(){
     int n_lines_cleared;
     bool clear_this_line = true;
 
-    for(int i = 0; i < HEIGHT; i++){
+    for(int i = HEIGHT-1; i >= 0; i--){
         clear_this_line = true;
         for(int j = 0; j < WIDTH; j++){
             if(!occupied(j,i)){
@@ -52,9 +52,6 @@ void TetrisBoard::clear_lines(){
             }
         }
         if(clear_this_line){
-            for(int j = 0; j < WIDTH; j++){
-                is_occupied[j][i] = false;
-            }
             lines_to_clear[n_lines_to_clear] = i;
             n_lines_to_clear++;
         }
@@ -62,8 +59,8 @@ void TetrisBoard::clear_lines(){
             break;
         }
     }
+    
     //Shift everything down
-
     n_lines_cleared = 0;
     for(int i = HEIGHT-1; i >= 0; i--){
         if(lines_to_clear[n_lines_cleared] == i){
