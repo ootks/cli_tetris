@@ -37,13 +37,49 @@ bool TetrisBoard::next_frame(){
     return true;
 }
 
-void clear_lines(){
-//    bool clear_this_line = false;;
-//    for(int i = 0; i < HEIGHT; i++){
-//        for(int j = 0; j < WIDTH; j++)
-//            clear_this_line = false;
-//        }
-//    }
+void TetrisBoard::clear_lines(){
+    int lines_to_clear[5] = {-1, -1, -1, -1, -1};
+    int n_lines_to_clear = 0;
+    int n_lines_cleared;
+    bool clear_this_line = true;
+
+    for(int i = 0; i < HEIGHT; i++){
+        clear_this_line = true;
+        for(int j = 0; j < WIDTH; j++){
+            if(!occupied(j,i)){
+                clear_this_line = false;
+                break;
+            }
+        }
+        if(clear_this_line){
+            for(int j = 0; j < WIDTH; j++){
+                is_occupied[j][i] = false;
+            }
+            lines_to_clear[n_lines_to_clear] = i;
+            n_lines_to_clear++;
+        }
+        if(n_lines_to_clear == 4){
+            break;
+        }
+    }
+    //Shift everything down
+
+    n_lines_cleared = 0;
+    for(int i = HEIGHT-1; i >= 0; i--){
+        if(lines_to_clear[n_lines_cleared] == i){
+            n_lines_cleared++;
+            continue;
+        }
+        for(int j = 0; j < WIDTH; j++){
+            is_occupied[j][i+n_lines_cleared] = is_occupied[j][i];
+        }
+    }
+    for(int i = 0; i < n_lines_to_clear; i++){
+        for(int j = 0; j < WIDTH; j++){
+            is_occupied[i][j] = false;
+        }
+    }
+
 }
 
 bool TetrisBoard::check(Tetromino tet){

@@ -48,10 +48,6 @@ int main()
             board.move(Rotate_CC);
             display = true;
         }
-        if(c == KEY_DOWN){
-            board.move(Rotate_CW);
-            display = true;
-        }
         if(time(NULL) - start_time > 1){
             continuing = board.next_frame();
             display = true;

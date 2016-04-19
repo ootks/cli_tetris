@@ -14,6 +14,7 @@ void Tetromino::init(int type){
 				   Position(WIDTH/2, 0),
 				   Position(WIDTH/2, 1),
 				   Position(WIDTH/2 - 1, 1)};
+        barycenter(WIDTH/2, 0);
 		color = Color(RED);
 	}
 	if(type == ZTILE){
@@ -21,6 +22,7 @@ void Tetromino::init(int type){
 				   Position(WIDTH/2, 0),
 				   Position(WIDTH/2, 1),
 				   Position(WIDTH/2 + 1, 1)};
+        barycenter(WIDTH/2, 0);
 		color = Color(BLUE);
 	}
 	if(type == LTILE){
@@ -28,6 +30,7 @@ void Tetromino::init(int type){
 				   Position(WIDTH/2 + 1, 1),
 				   Position(WIDTH/2, 1),
 				   Position(WIDTH/2 - 1, 1)};
+        barycenter(WIDTH/2, 1);
 		color = Color(GREEN);
 	}
 	if(type == ITILE){
@@ -35,6 +38,7 @@ void Tetromino::init(int type){
 				   Position(WIDTH/2 + 1, 0),
 				   Position(WIDTH/2, 0),
 				   Position(WIDTH/2 - 1, 0)};
+        barycenter(WIDTH/2+1, 0);
 		color = Color(GREEN);
 	}
 	if(type == OTILE){
@@ -42,6 +46,7 @@ void Tetromino::init(int type){
 				   Position(WIDTH/2 + 1, 1),
 				   Position(WIDTH/2, 0),
 				   Position(WIDTH/2 + 1, 0)};
+        barycenter(WIDTH/2, 1);
 		color = Color(PURPLE);
 	}
 	if(type == TTILE){

@@ -32,6 +32,7 @@ public:
     friend void curses_display(TetrisBoard board, int max_row, int max_col);
 private:
 	Position squares[4];
+    Position barycenter;
     void init(int type);
 	Color color;
 };
