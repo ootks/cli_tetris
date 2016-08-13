@@ -1,17 +1,5 @@
 #include "TetrisBoard.hpp"
 #include <stdio.h>
-//TetrisBoard::TetrisBoard(bool test){
-//	for(int i = 0; i < HEIGHT; i++){
-//		for(int j = 0; j < WIDTH; j++){
-//			is_occupied[i][j] = false;
-//		}
-//	}
-//    for(int i = 0; i < 10; i++){
-//		for(int j = 0; j < WIDTH; j++){
-//			is_occupied[i][j] = true;
-//		}
-//    }
-//}
 
 /* Construct a tetris board*/
 TetrisBoard::TetrisBoard(){
@@ -22,6 +10,7 @@ TetrisBoard::TetrisBoard(){
 	}
     curr = Tetromino();
     next = Tetromino();
+    score = 0;
 }
 
 bool TetrisBoard::next_frame(){
@@ -40,21 +29,30 @@ bool TetrisBoard::next_frame(){
 }
 
 void TetrisBoard::clear_lines(){
-    int lines_to_clear[5] = {-1, -1, -1, -1, -1};
+    //List of lines to clear
+    //from top to bottom
+    int lines_to_clear[4] = {-1, -1, -1, -1};
     int n_lines_to_clear = 0;
     int n_lines_cleared;
     bool clear_this_line = true;
 
     for(int i = HEIGHT-1; i >= 0; i--){
+        //Assume the line should be cleared
         clear_this_line = true;
+        //If you find an unoccupied square,
+        //then the line shouldn't be deleted
         for(int j = 0; j < WIDTH; j++){
             if(!occupied(j,i)){
                 clear_this_line = false;
                 break;
             }
         }
+        //If the line should be cleared
         if(clear_this_line){
+            //The nth line to clear
+            //is i
             lines_to_clear[n_lines_to_clear] = i;
+            //Increment the number of lines to clear
             n_lines_to_clear++;
         }
         if(n_lines_to_clear == 4){
@@ -62,9 +60,24 @@ void TetrisBoard::clear_lines(){
         }
     }
     
+    if(n_lines_to_clear == 1){
+        score += 40;
+    }
+    if(n_lines_to_clear == 2){
+        score += 100;
+    }
+    if(n_lines_to_clear == 3){
+        score += 300;
+    }
+    if(n_lines_to_clear == 4){
+        score += 1200;
+    }
     //Shift everything down
     n_lines_cleared = 0;
     for(int i = HEIGHT-1; i >= 0; i--){
+        //If the next line should be cleared 
+        //just don't move it, and it will be 
+        //overwritten
         if(lines_to_clear[n_lines_cleared] == i){
             n_lines_cleared++;
             continue;
@@ -73,6 +86,8 @@ void TetrisBoard::clear_lines(){
             is_occupied[j][i+n_lines_cleared] = is_occupied[j][i];
         }
     }
+
+    //Clear top rows
     for(int i = 0; i < n_lines_to_clear; i++){
         for(int j = 0; j < WIDTH; j++){
             is_occupied[i][j] = false;
@@ -109,31 +124,77 @@ Position TetrisBoard::get_curr(int i){
     return curr.squares[i];
 }
 
-bool TetrisBoard::move(Direction dir){
-    Tetromino tet;
-    if(dir == Left){
-       tet = curr.move(-1);
-    }
-    if(dir == Right){
-       tet = curr.move(1);
-    }
-    if(dir == Descend){
-       tet = curr.descend();
-    }
-    if(dir == Rotate_CC){
-        tet = curr.rotate(-1);
-    }
+bool TetrisBoard::move(Move dir){
+    Tetromino tet = curr.descend();
+    
     if(dir == Drop){
-        tet = curr.descend();
         while(check(tet)){
             curr = tet;
             tet = curr.descend();
+            score += 1;
         }
-        next_frame();
+         for(int i = 0; i < 4; i++){
+            set_occupied(true, curr.squares[i]);
+        }
+        clear_lines();
+        curr = next;
+        next = Tetromino();
+
+        return check(curr);
     }
+
+    else{
+        if(dir == DESCEND){
+            score += 1;
+        }
+        tet = curr.move(dir);
+    }
+
     if(check(tet)){
         curr = tet;
         return true;
     }
     return false;
+}
+
+bool TetrisBoard::get_valid_moves(Tetromino tet, Tetromino *moves, int *n_moves){
+    Tetromino temp;
+    int n_valid_moves = 0;
+    for(int move = Left; move < Drop; move++){
+        temp = tet.move((Move)move);
+        if(check(temp)){
+            moves[n_valid_moves] = temp;
+            n_valid_moves++;
+        }
+    }
+    temp = tet.move(Rotate_CC);
+    if(check(temp)){
+        moves[n_valid_moves] = temp;
+        n_valid_moves++;
+    }
+    temp = temp.move(Rotate_CC);
+    if(check(temp)){
+        moves[n_valid_moves] = temp;
+        n_valid_moves++;
+    }
+    temp = temp.move(Rotate_CC);
+    if(check(temp)){
+        moves[n_valid_moves] = temp;
+        n_valid_moves++;
+    }
+    temp = tet.move(Descend);
+    if(check(temp)){
+        moves[n_valid_moves] = temp;
+        n_valid_moves++;
+        *n_moves = n_valid_moves;
+        return true;
+    }
+    else{
+        *n_moves = n_valid_moves;
+        return false;
+    }
+}
+
+int TetrisBoard::get_score(){
+    return score;
 }

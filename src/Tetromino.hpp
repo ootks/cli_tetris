@@ -25,15 +25,21 @@ public:
 	Tetromino();
 //	Tetromino();
 	Tetromino(const Tetromino &tet);
+	Tetromino(const Tetromino *tet);
 	Tetromino rotate(int dir);
-	Tetromino move(int dir);
+	Tetromino translate(int dir);
 	Tetromino drop();
 	Tetromino descend();
     friend void curses_display(TetrisBoard board, int max_row, int max_col);
+    int get_n_orient();
+    int get_orient();
+    Tetromino move(Move i);
 private:
 	Position squares[4];
     Position barycenter;
     void init(int type);
 	Color color;
+    int n_orient;
+    int orient;
 };
 #endif
